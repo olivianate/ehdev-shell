@@ -165,6 +165,7 @@ class DashboardModule extends Component {
     return (
       <Card className={styles.Dashboard__BuildAnalyse}>
         <h3>构建分析</h3>
+        <iframe frameBorder="0" width="100%" height="90%" title="report" src="/assets/report.html"></iframe>
       </Card>
     );
   }

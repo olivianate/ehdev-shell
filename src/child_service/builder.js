@@ -16,8 +16,10 @@ const {
 } = require('./config');
 
 const SHELL_NODE_MODULES_PATH = process.env.SHELL_NODE_MODULES_PATH;
+
 const AddAssetHtmlPlugin = require(path.join(SHELL_NODE_MODULES_PATH, 'add-asset-html-webpack-plugin'));
-const StatsPlugin = require(path.join(SHELL_NODE_MODULES_PATH, 'stats-webpack-plugin'));
+// const StatsPlugin = require(path.join(SHELL_NODE_MODULES_PATH, 'stats-webpack-plugin'));
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 getProdConfig(projectConfig)
   .then(webpackConfig => {
@@ -40,10 +42,31 @@ getProdConfig(projectConfig)
       }
       webpackConfig.plugins.push(
         new UglifyJsPlugin(getUglifyJsOptions(projectConfig)),
-        new StatsPlugin(
-          '../stats.json',
-          'verbose'
-        ),
+        // new StatsPlugin(
+        //   '../stats.json',
+        //   'verbose'
+        // ),
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          reportFilename: path.resolve(__dirname, '../../assets/report.html'),
+          // Module sizes to show in report by default.
+          // Should be one of `stat`, `parsed` or `gzip`.
+          // See "Definitions" section for more information.
+          defaultSizes: 'parsed',
+          // Automatically open report in default browser
+          // openAnalyzer: true,
+          // If `true`, Webpack Stats JSON file will be generated in bundles output directory
+          generateStatsFile: true,
+          // Name of Webpack Stats JSON file that will be generated if `generateStatsFile` is `true`.
+          // Relative to bundles output directory.
+          statsFilename: 'stats.json',
+          // Options for `stats.toJson()` method.
+          // For example you can exclude sources of your modules from stats file with `source: false` option.
+          // See more options here: https://github.com/webpack/webpack/blob/webpack-1/lib/Stats.js#L21
+          statsOptions: null,
+          // Log level. Can be 'info', 'warn', 'error' or 'silent'.
+          logLevel: 'info'
+        })
       );
       Object.assign(webpackConfig, {
         profile: true,
